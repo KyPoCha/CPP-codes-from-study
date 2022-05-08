@@ -448,7 +448,52 @@ public:
 	}
 
   bool nextCompany ( string& name, string& addr ) const{
+    if(size == 0){
+      return false;
+    }
+
+		std::vector<Company> vector;
+
+		for (size_t i = 0; i < size; i++){
+			vector.push_back(data_base[i]);
+		}
+
+		sort(vector.begin(),vector.end(),[](Company a, Company b){
+			return a > b;
+		});
+
+		bool result = false;
+
+		if( name == "" || addr == "" ||  name == " " || addr == " " || name == "\0" || addr == "\0"){
+			return result;
+		}
+		else{
+			result = false;
+			string _name = name;
+			string _addr = addr;
+
+			std::transform(_name.begin(), _name.end(),_name.begin(), [](unsigned char c){ return std::tolower(c);});
+			std::transform(_addr.begin(), _addr.end(),_addr.begin(), [](unsigned char c){ return std::tolower(c);});
+
+			for(size_t i = 0; i < size; i++){
+				string nameF = vector[i].name;
+				string addrF = vector[i].addr;
+				std::transform(nameF.begin(), nameF.end(),nameF.begin(), [](unsigned char c){ return std::tolower(c);});
+				std::transform(addrF.begin(), addrF.end(),addrF.begin(), [](unsigned char c){ return std::tolower(c);});
+				if(nameF == _name && addrF == _addr){
+					if(i != size - 1){
+						name = vector[i+1].name;
+						addr = vector[i+1].addr;
+						result = true;
+						break;
+					}
+				}
+			}
+		}
+
+    return result;
   }
+
 	bool invoice ( const string & taxID, unsigned int amount ) {
 	}
 	bool invoice ( const string & name, const string & addr, unsigned int amount ) {
