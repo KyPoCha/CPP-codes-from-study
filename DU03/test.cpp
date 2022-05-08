@@ -30,6 +30,29 @@ ios_base & ( * date_format ( const char * fmt ) ) ( ios_base & x )
   return [] ( ios_base & ios ) -> ios_base & { return ios; };
 }
 //=================================================================================================
+
+//function to determine days in specific month: January = 1, February = 2, ..., December = 12
+bool DaysInMonth(int days, int month){
+  bool IsValid;
+  if( month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 9 || month == 10 || month == 12){
+    if(days <= 31 && days > 0){
+      IsValid = true;
+    }
+    else{
+      IsValid = false;
+    }
+  }
+  else{
+    if(days <= 30 && days > 0){
+      IsValid = true;
+    }
+    else{
+      IsValid = false;
+    }
+  }
+  return IsValid;
+}
+
 class CDate
 {
 public:
@@ -69,6 +92,74 @@ public:
 
   int& GetD(){
     return _day;
+  }
+
+  /*
+  * Metods for determine corrects values for class object
+  */
+
+  bool IsValidDay(int value){
+    if(_year % 4 == 0 && _month == 2){
+      if(value <= 29 && value > 0){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    else{
+      if(value <= 0 || value > 31){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+  }
+
+  bool IsValidDay(int value, int year, int month){
+    if(year % 4 == 0 && month == 2){
+      if(value <= 29 && value > 0){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    else if(month == 2){
+      if(value <= 0 || value > 28){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+    else{
+      if( value <= 0 || value > 31){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+  }
+
+  bool IsValidMonth(int value){
+    if(value <= 0 || value > 12){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
+  bool IsValidYear(int value){
+    if(value < 2000 || value > 2030){
+      return false;
+    }
+    else{
+      return true;
+    }
   }
 
   /*
