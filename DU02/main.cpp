@@ -556,6 +556,15 @@ public:
 	}
 
 	unsigned int medianInvoice ( void ) const {
+		std::vector<unsigned int> median_invoice_copy ( median_invoice );
+		std::sort ( median_invoice_copy.begin(), median_invoice_copy.end() );
+
+		size_t size = median_invoice_copy.size();
+		unsigned int median = 0;
+
+		if ( size != 0 )
+			median = median_invoice_copy[size / 2];
+		else
 			median = 0;
 		return median;
 	}
