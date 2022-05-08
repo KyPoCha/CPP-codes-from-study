@@ -1,0 +1,2 @@
+build/MultMatrix.o: src/MultMatrix.cpp src/MultMatrix.h src/matrix.h \
+ src/DiffMatrix.h

@@ -1,0 +1,2 @@
+build/CGemKomentare.o: src/CGemKomentare.cpp src/matrix.h \
+ src/CGemKomentare.h src/CGem.h

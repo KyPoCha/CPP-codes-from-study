@@ -1,0 +1,1 @@
+build/DiffMatrix.o: src/DiffMatrix.cpp src/DiffMatrix.h src/matrix.h

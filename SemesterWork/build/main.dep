@@ -1,0 +1,2 @@
+build/main.o: src/main.cpp src/matrix.h src/DiffMatrix.h src/SumMatrix.h \
+ src/MultMatrix.h src/CGem.h src/CGemKomentare.h

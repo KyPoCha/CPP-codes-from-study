@@ -1,0 +1,2 @@
+build/SumMatrix.o: src/SumMatrix.cpp src/SumMatrix.h src/matrix.h \
+ src/DiffMatrix.h
