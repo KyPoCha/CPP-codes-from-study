@@ -274,8 +274,36 @@ bool operator <= (const CDate& a, const CDate& b){
 }
 class CSupermarket
 {
+  public:
+  private:
+    struct Product{
+
+      Product(std::string name, CDate date, size_t count) : _name(name), _date(date), _counts(count){}
+      std::string _name;
+      CDate _date;
+      size_t _counts;
+
+      std::string name() const{
+        return _name;
+      }
+      CDate date() const{
+        return _date;
+      }
+      size_t counts() const{
+        return _counts;
+      }
+    };
+
+    std::list<Product> _products;
+
+    friend std::ostream& operator << (std::ostream& out,const Product& a);
+
 };
 
+std::ostream& operator << (std::ostream& out,const CSupermarket::Product& a){
+  out << a.name() << " " << a.date() << " " << a.counts();
+  return out;
+}
 
 std::ostream& operator << (std::ostream &oss,const CDate& a){
   oss << a.GetY();
@@ -295,6 +323,7 @@ std::ostream& operator << (std::ostream &oss,const CDate& a){
 
   return oss;
 }
+
 #ifndef __PROGTEST__
 int main ( void )
 {
