@@ -20,9 +20,21 @@ class CFile
     };
 
     CFile( void ){
+        data._bytes = (uint8_t *) malloc(0 * sizeof(uint8_t));
+        _size = 0;
+        _pos = 0;
+        _data_version = 0;
+        _versions = (CData *)malloc(0 * sizeof(CData));
     };
+
     ~CFile(){
+        free(data._bytes);
+        for(size_t i = 0; i < _data_version; i++){
+            free(_versions[i]._bytes);
+        }
+        free(_versions);
     };
+
     CFile& operator = (const CFile & value) {
     }
     CFile(const CFile & value){
