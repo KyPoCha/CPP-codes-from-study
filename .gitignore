@@ -2,5 +2,4 @@
 main.sh
 *.bin
 *.a
-*.txt
 *tests/
