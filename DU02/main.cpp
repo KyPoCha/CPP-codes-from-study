@@ -189,7 +189,10 @@ public:
 
   }
   ~CVATRegister  ( void ){
+    delete[] data_base;
+    //delete[] data_invoice;
   }
+
 	bool newCompany ( const string & name, const string & addr, const string & taxID ) {
     }
 	bool cancelCompany ( const string & taxID ) {
@@ -209,6 +212,7 @@ public:
 	bool audit ( const string & taxID, unsigned int & sumIncome ) const {
 	}
 	unsigned int medianInvoice ( void ) const {
+		return median;
 	}
 
  private:
