@@ -544,8 +544,17 @@ public:
 			return false;
 		}
 	}
+
 	bool audit ( const string & taxID, unsigned int & sumIncome ) const {
+
+		try {
+			sumIncome = invoice_id.GetPrvk ( taxID );
+			return true;
+		} catch ( bool e ) {
+			return false;
+		}
 	}
+
 	unsigned int medianInvoice ( void ) const {
 			median = 0;
 		return median;
