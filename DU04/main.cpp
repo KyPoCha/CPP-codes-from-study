@@ -10,6 +10,15 @@ using namespace std;
 
 class CFile
 {
+  public:
+
+    struct CData
+    {
+        uint8_t * _bytes;
+        uint64_t _size;
+        uint64_t _pos;
+    };
+
     CFile( void ){
     };
     ~CFile(){
@@ -37,6 +46,11 @@ class CFile
     bool                     undoVersion                   ( void ){
     };
   private:
+    CData data;
+    uint64_t _size;
+    uint64_t _pos;
+    uint64_t _data_version;
+    CData * _versions;
 };
 
 #ifndef __PROGTEST__
