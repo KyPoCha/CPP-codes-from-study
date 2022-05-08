@@ -41,7 +41,15 @@ class CFile
     }
 
      bool                     seek                          ( uint32_t          offset ){
+        if(offset > _size || offset < 0){
+          return false;
+        }
+
+        _pos = offset;
+
+        return true;
     };
+
     uint32_t                 read                          ( uint8_t         * dst,
                                                              uint32_t          bytes ){
     };
