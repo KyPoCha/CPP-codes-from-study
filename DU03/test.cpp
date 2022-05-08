@@ -32,6 +32,76 @@ ios_base & ( * date_format ( const char * fmt ) ) ( ios_base & x )
 //=================================================================================================
 class CDate
 {
+public:
+  //initialization of object
+  CDate(int year, int month, int day){
+    if(year > 2030 || year < 2000){
+      throw InvalidDateException();
+    }
+    else{
+      this->_year = year;
+    }
+    if(month <= 0 || month > 12){
+      throw InvalidDateException();
+    }
+    else{
+      this->_month = month;
+    }
+    if(day <= 0 || day > 31){
+      throw InvalidDateException();
+    }
+    else{
+      this->_day = day;
+    }
+  };
+
+  /*
+  * Getters will return privates values from class object
+  */
+
+  int& GetY(){
+    return _year;
+  }
+
+  int& GetM(){
+    return _month;
+  }
+
+  int& GetD(){
+    return _day;
+  }
+
+  /*
+  *   Setting values into class object after the checking them for errors
+  */
+
+  void SetD(int value){
+    if(IsValidDay(value)){
+      _day = value;
+    }
+    else{
+      _day = 0;
+    }
+  }
+
+  void SetM(int value){
+    if(IsValidMonth(value)){
+      _month = value;
+    }
+    else{
+      _month = 0;
+    }
+  }
+
+  void SetY(int value){
+    if(IsValidYear(value)){
+      _year = value;
+    }
+    else{
+      _year = 0;
+    }
+  }
+
 
 private:
   int _year, _month, _day;
