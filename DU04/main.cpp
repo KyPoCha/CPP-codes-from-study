@@ -86,6 +86,21 @@ class CFile
     };
     bool                     undoVersion                   ( void ){
     };
+    //
+    // uint64_t& getlen(){
+    //   return data._size;
+    // }
+    // uint64_t& getdatasize(){
+    //   return _size;
+    // }
+    // uint64_t& getpos(){
+    //   return data._pos;
+    // }
+    // uint64_t& getversion(){
+    //   return _data_version;
+    // }
+    //
+
   private:
     CData data;
     uint64_t _size;
@@ -116,6 +131,18 @@ bool               readTest                                ( CFile           & x
       return false;
   return true;
 }
+// void               readTest2                                ( CFile           & x,
+//                                                              const initializer_list<uint8_t> & data,
+//                                                              uint32_t          rdLen )
+// {
+//   uint8_t  tmp[100];
+//   uint32_t idx = 0;
+//
+//
+//   std::cout << x.read(tmp,rdLen) << '\n';
+//   for ( auto v : data )
+//     std::cout << static_cast<int>(tmp[idx++]) << '\t' << static_cast<int>(v) <<'\n';
+// }
 
 int main ( void )
 {
