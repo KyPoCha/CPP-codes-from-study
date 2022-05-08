@@ -36,8 +36,55 @@ class CFile
     };
 
     CFile& operator = (const CFile & value) {
+        if(this != &value){
+
+            free(data._bytes);
+
+            for(uint64_t i = 0; i < _data_version; i++){
+                free(_versions[i]._bytes);
+            }
+            free(_versions);
+
+            data._bytes = (uint8_t *)malloc(value._size * sizeof(uint8_t));
+            _versions = (CData*)malloc(value._data_version * sizeof(CData));
+
+            memcpy(data._bytes, value.data._bytes, value._size);
+
+            for(uint64_t i = 0; i < value._data_version; i++){
+                _versions[i]._bytes = (uint8_t *)malloc(value._versions[i]._size * sizeof(uint8_t));
+
+                memcpy(_versions[i]._bytes, value._versions[i]._bytes, value._versions[i]._size);
+
+                _versions[i]._size = value._versions[i]._size;
+                _versions[i]._pos = value._versions[i]._pos;
+            }
+
+            _size = value._size;
+            _pos = value._pos;
+            _data_version = value._data_version;
+        }
+        return *this;
     }
+
     CFile(const CFile & value){
+        data._bytes = (uint8_t *)malloc(value._size * sizeof(uint8_t));
+
+        _versions = (CData *)malloc(value._data_version * sizeof(CData));
+
+        memcpy(data._bytes, value.data._bytes, value._size);
+
+        for(size_t i = 0; i < value._data_version; i++){
+            _versions[i]._bytes = (uint8_t *)malloc(value._versions[i]._size * sizeof(uint8_t));
+
+            memcpy(_versions[i]._bytes, value._versions[i]._bytes, value._versions[i]._size);
+
+            _versions[i]._size = value._versions[i]._size;
+            _versions[i]._pos = value._versions[i]._pos;
+        }
+
+        _size = value._size;
+        _pos = value._pos;
+        _data_version = value._data_version;
     }
 
      bool                     seek                          ( uint32_t          offset ){
