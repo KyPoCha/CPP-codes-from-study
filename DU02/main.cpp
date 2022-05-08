@@ -14,6 +14,175 @@
 #include <memory>
 using namespace std;
 #endif /* __PROGTEST__ */
+
+//unsigned int DEFAULT_TABLE_SIZE1 = 1000;
+
+template <typename T>
+class Entry {
+private:
+	string _klic;
+	T _hodnota;
+	Entry *_next;
+public:
+	Entry ( string _klic, T _hodnota ) {
+		this->_klic = _klic;
+		this->_hodnota = _hodnota;
+		this->_next = nullptr;
+	}
+	string GetKlic () { return _klic; }
+	T GetHodnota () { return _hodnota; }
+	void SetHodnota ( T _hodnota ) { this->_hodnota = _hodnota; }
+	Entry *GetNext() { return _next; }
+	void SetNext ( Entry *_next ) { this->_next = _next; }
+};
+
+template <typename T>
+class HashMap {
+private:
+	float _hold;
+	unsigned int _MSize;
+	unsigned int _TSize;
+	unsigned int _size;
+	Entry<T> **_table;
+
+	std::hash<std::string> Hash;
+
+	void ResizeHasMap () {
+		unsigned int old_TSize = _TSize;
+		_TSize *= 2;
+		_MSize = (unsigned int) ( _TSize * _hold );
+		Entry<T> **Table = _table;
+		_table = new Entry<T> * [_TSize];
+
+		for ( unsigned int i = 0; i < _TSize; i++ )
+			_table[i] = nullptr;
+		_size = 0;
+
+		for ( unsigned int hash_value = 0; hash_value < old_TSize; hash_value++ )
+			if ( Table[hash_value] != nullptr )
+			{
+				Entry<T> *oldEntry;
+				Entry<T> *entry = Table[hash_value];
+				while ( entry != nullptr ) {
+					PutPrvk ( entry->GetKlic(), entry->GetHodnota() );
+					oldEntry = entry;
+					entry = entry->GetNext();
+					delete oldEntry;
+				}
+			}
+		delete[] Table;
+	}
+public:
+	HashMap () {
+		_hold = 0.75;
+		_MSize = 1000 * _hold;
+		_TSize = 1000;
+		_size = 0;
+		_table = new Entry<T>*[_TSize];
+
+		for ( unsigned int i = 0; i < _TSize; i++ )
+			_table[i] = nullptr;
+	}
+
+	void Set ( float _hold ) {
+		this->_hold = _hold;
+		_MSize = (unsigned int) ( _TSize * _hold );
+	}
+
+	T GetPrvk ( string _klic ) const {
+
+		auto value = Hash ( _klic );
+		auto hash_value = value % _TSize;
+
+		if ( _table[hash_value] == nullptr )
+			throw false;
+		else
+		{
+			auto entry = _table[hash_value];
+			while ( entry != nullptr && entry->GetKlic() != _klic )
+				entry = entry->GetNext();
+			if ( entry == nullptr )
+				throw false;
+			else
+				return entry->GetHodnota();
+		}
+	}
+
+	void PutPrvk ( string _klic, T _hodnota ) {
+
+		auto value = Hash ( _klic );
+		auto hash_value = value % _TSize;
+
+		if ( _table[hash_value] == nullptr ) {
+			_table[hash_value] = new Entry<T> ( _klic, _hodnota );
+			_size++;
+		}
+		else
+		{
+			auto entry = _table[hash_value];
+			while ( entry->GetNext() != nullptr && entry->GetKlic() != _klic )
+				entry = entry->GetNext();
+
+			if ( entry->GetKlic() == _klic )
+				entry->SetHodnota ( _hodnota );
+			else
+			{
+				entry->SetNext ( new Entry<T> ( _klic, _hodnota ) );
+				_size++;
+			}
+		}
+		if ( _size >= _MSize )
+			ResizeHasMap();
+	}
+
+	void RemovePrvk ( string _klic ) {
+
+		auto value = Hash ( _klic );
+		auto hash_value = value % _TSize;
+
+		if ( _table[hash_value] != nullptr ) {
+			Entry<T> *prevEntry = nullptr;
+			auto entry = _table[hash_value];
+			while ( entry->GetNext() != nullptr && entry->GetKlic() != _klic ) {
+				prevEntry = entry;
+				entry = entry->GetNext();
+			}
+			if ( entry->GetKlic() == _klic )
+			{
+				if ( prevEntry == nullptr )
+				{
+					auto nextEntry = entry->GetNext();
+					delete entry;
+					_table[hash_value] = nextEntry;
+				}
+				else
+				{
+					auto _next = entry->GetNext();
+					delete entry;
+					prevEntry->SetNext( _next );
+				}
+				_size--;
+			}
+		}
+	}
+
+	~HashMap() {
+		for ( unsigned int hash_value = 0; hash_value < _TSize; hash_value++ )
+			if ( _table[hash_value] != nullptr )
+			{
+				Entry<T> *prevEntry = nullptr;
+				auto entry = _table[hash_value];
+				while ( entry != nullptr ) {
+					prevEntry = entry;
+					entry = entry->GetNext();
+					delete prevEntry;
+				}
+			}
+		delete[] _table;
+	}
+
+};
+
 class CVATRegister {
 public:
   CVATRegister   ( void ){
@@ -41,6 +210,7 @@ public:
 	}
 	unsigned int medianInvoice ( void ) const {
 	}
+
 #ifndef __PROGTEST__
 int               main           ( void )
 {
