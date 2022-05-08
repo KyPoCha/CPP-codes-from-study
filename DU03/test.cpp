@@ -138,11 +138,179 @@ public:
     _year = int(c - ((_month > 2) ? 4716 : 4715));
   }
 
+  /*
+  * Overloads operators for CDate class : arithmetic operations, comparing, post,prefix increment and decrement with whole days in date
+  */
+
+  CDate& operator + (int date){
+    long jd = JDay();
+    GDate(jd + date);
+    return *this;
+  }
+
+  CDate& operator - (int date){
+    long jd = JDay();
+    GDate(jd - date);
+    return *this;
+  }
+
+  int operator - (CDate& b){
+    long jd1 = JDay();
+    long jd2 = b.JDay();
+    return (jd1 - jd2);
+  }
+
+  bool operator == (CDate& b){
+    return JDay() == b.JDay();
+  }
+
+  bool operator != (CDate& b){
+    return JDay() != b.JDay();
+  }
+
+  bool operator < (CDate& b){
+    return JDay() < b.JDay();
+  }
+
+  bool operator > (CDate& b){
+    return JDay() > b.JDay();
+  }
+
+  bool operator >= (CDate& b){
+    return JDay() >= b.JDay();
+  }
+
+  bool operator <= (CDate& b){
+    return JDay() <= b.JDay();
+  }
+
+  friend CDate& operator++(CDate& i);
+
+  friend CDate operator++(CDate& i, int);
+
+  friend CDate& operator--(CDate& i);
+
+  friend CDate operator--(CDate& i, int);
+
+  friend bool operator >> (std::istringstream& out, CDate& a);
 
 private:
   int _year, _month, _day;
 
 };
+
+/*
+* Prefix operators will change amount of days and using them after "return"
+* Prefix will using amount of days and then change them;
+*/
+
+CDate& operator++(CDate& i) {
+  long jd = i.JDay();
+  i.GDate(jd + 1);
+  return i;
+}
+
+CDate operator++(CDate& i, int) {
+  CDate oldDate(i.GetY(), i.GetM(), i.GetD());
+  long jd = i.JDay();
+  i.GDate(jd + 1);
+  return oldDate;
+}
+
+CDate& operator--(CDate& i) {
+  long jd = i.JDay();
+  i.GDate(jd - 1);
+  return i;
+}
+
+CDate operator--(CDate& i, int) {
+  CDate oldDate(i.GetY(), i.GetM(), i.GetD());
+  long jd = i.JDay();
+  i.GDate(jd - 1);
+  return oldDate;
+}
+
+/*
+* Overloads for stream inputs and outputs for class
+*/
+
+std::ostringstream& operator << (std::ostringstream &oss, CDate& a){
+
+  oss << a.GetY();
+  /*
+  * Creating output date format
+  * If we have 1th of April 2012, we will have "2012-04-01" for string
+  */
+  if(a.GetM() < 10){
+    oss << "-0" << a.GetM();
+  }
+  else{
+    oss << "-" << a.GetM();
+  }
+  if(a.GetD() < 10){
+    oss << "-0" << a.GetD();
+  }
+  else{
+    oss << "-" << a.GetD();
+  }
+
+  return oss;
+}
+
+std::ostream& operator << (std::ostream &oss, CDate& a){
+
+  oss << a.GetY();
+
+  if(a.GetM() < 10){
+    oss << "-0" << a.GetM();
+  }
+  else{
+    oss << "-" << a.GetM();
+  }
+  if(a.GetD() < 10){
+    oss << "-0" << a.GetD();
+  }
+  else{
+    oss << "-" << a.GetD();
+  }
+
+  return oss;
+}
+
+bool operator >> (std::istringstream& out, CDate& a){
+
+  bool IsValid;
+
+  string token;
+  out >> token;
+
+  //deleting extra symbols from istreamstring
+  token.replace(token.find("-"),1," ");
+  token.replace(token.find("-"),1," ");
+  std::istringstream buf(token);
+  std::string tmp;
+  int year, month, day, it = 0;
+  while(it < 3){
+    buf >> tmp;
+    //casting from string type to int for CDate atributes with stoi() function
+    if(it == 0){year = stoi(tmp);}
+    if(it == 1){month = stoi(tmp);}
+    if(it == 2){day = stoi(tmp);}
+    it++;
+  }
+  //check values for errors in date formats
+  if(!a.IsValidDay(day,year,month) || !a.IsValidMonth(month) || !a.IsValidYear(year) || !DaysInMonth(day,month)){
+    IsValid = false;
+  }
+  else{
+    IsValid = true;
+    a.SetD(day);
+    a.SetM(month);
+    a.SetY(year);
+  }
+
+  return IsValid;
+}
 
 #ifndef __PROGTEST__
 int main ( void )
