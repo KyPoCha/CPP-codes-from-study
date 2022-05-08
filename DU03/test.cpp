@@ -102,6 +102,42 @@ public:
     }
   }
 
+/*
+* Metod to convert date format time to number of days
+*/
+
+  long JDay() {
+      if (_month <= 2){
+        _year--;
+        _month += 12;
+      }
+      unsigned long jday;
+      int a = _year / 100;
+      a = 2 - a + (a / 4);
+      jday = 1461L * long(_year);
+      jday /= 4L;
+      unsigned long k = 306001L * long(_month + 1);
+      k /= 10000L;
+      jday += k + _day + 1720995L + a;
+      return jday;
+  }
+
+  /*
+  * Metod to convert number of days to date format
+  */
+
+  void GDate(long jday) {
+    unsigned long a = (jday * 4L - 7468865L) / 146097L;
+    a = (jday > 2299160) ? jday + 1 + a - (a / 4L) : jday;
+    long b = a + 1524;
+    long c = (b * 20L - 2442L) / 7305L;
+    long d = (c * 1461L) / 4L;
+    long e = (10000L * (b - d)) / 306001L;
+    _day = int(b - d - ((e * 306001L) / 10000L));
+    _month = int((e <= 13) ? e - 1 : e - 13);
+    _year = int(c - ((_month > 2) ? 4716 : 4715));
+  }
+
 
 private:
   int _year, _month, _day;
