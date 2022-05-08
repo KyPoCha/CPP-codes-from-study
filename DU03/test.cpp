@@ -32,7 +32,12 @@ ios_base & ( * date_format ( const char * fmt ) ) ( ios_base & x )
 //=================================================================================================
 class CDate
 {
+
+private:
+  int _year, _month, _day;
+
 };
+
 #ifndef __PROGTEST__
 int main ( void )
 {
