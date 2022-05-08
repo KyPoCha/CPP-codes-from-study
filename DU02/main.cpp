@@ -211,6 +211,41 @@ public:
 	unsigned int medianInvoice ( void ) const {
 	}
 
+ private:
+ 	HashMap<string> Company_Addr;
+ 	HashMap<string> Company_Id;
+ 	HashMap<unsigned int> invoice_id;
+	std::vector<unsigned int> median_invoice;
+  struct Company{
+    std::string name;
+    std::string addr;
+    std::string taxID;
+    unsigned int inv = 0;
+    unsigned int& median(){
+      return inv;
+    }
+
+    bool operator > (const Company& a){
+      if(name < a.name){
+        return true;
+      }
+      if(name > a.name){
+        return false;
+      }
+      if(addr < a.addr){
+        return true;
+      }
+      return false;
+    }
+  };
+
+  Company * data_base = nullptr;
+  //unsigned int * data_invoice = nullptr;
+  size_t size = 0;
+  //unsigned int invoice_count = 0;
+  //unsigned int total_invoice = 0;
+  };
+
 #ifndef __PROGTEST__
 int               main           ( void )
 {
