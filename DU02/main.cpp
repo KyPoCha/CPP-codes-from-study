@@ -409,6 +409,28 @@ public:
 	}
 
   bool firstCompany ( string& name, string& addr ) const{
+    if(size == 0){
+      return false;
+    }
+    if(size == 1){
+      name = data_base[0].name;
+      addr = data_base[0].addr;
+      return true;
+    }
+
+		std::vector<Company> vector;
+
+ 		for (size_t i = 0; i < size; i++){
+		 	vector.push_back(data_base[i]);
+ 		}
+
+		sort(vector.begin(),vector.end(),[](Company a, Company b){
+			return a > b;
+		});
+
+		name = vector[0].name;
+		addr = vector[0].addr;
+    return true;
   }
   bool nextCompany ( string& name, string& addr ) const{
   }
