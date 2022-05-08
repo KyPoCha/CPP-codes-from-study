@@ -324,6 +324,29 @@ std::ostream& operator << (std::ostream &oss,const CDate& a){
   return oss;
 }
 
+std::ostream& operator << (std::ostream &oss,pair<std::string,int> a){
+  oss << a.first << " " << a.second <<endl;
+  return oss;
+}
+
+void print_inside(std::list<pair<std::string,int>> &a){
+  std::list<pair<std::string,int>>::iterator it;
+  it = a.begin();
+  while(it != a.end()){
+    std::cout << *it <<'\n';
+    ++it;
+  }
+}
+
+void print_vector(std::vector<pair<std::string,int>>& a){
+  std::vector<pair<std::string,int>>::iterator iter;
+  iter = a.begin();
+  while(iter != a.end()){
+    std::cout << *iter <<'\n';
+    ++iter;
+  }
+}
+
 #ifndef __PROGTEST__
 int main ( void )
 {
