@@ -194,7 +194,82 @@ public:
   }
 
 	bool newCompany ( const string & name, const string & addr, const string & taxID ) {
+		string nameAdress = name + "´´^´ˇ´" + addr;
+		std::transform ( nameAdress.begin(), nameAdress.end(), nameAdress.begin(), ::tolower );
+		string companyID = taxID;
+
+		try {
+			Company_Id.GetPrvk ( companyID );
+			return false;
+		} catch ( bool e ) {};
+		try {
+			Company_Addr.GetPrvk ( nameAdress );
+			return false;
+		} catch ( bool e ) {};
+
+		invoice_id.PutPrvk ( companyID, 0 );
+		Company_Addr.PutPrvk ( nameAdress, companyID );
+		Company_Id.PutPrvk ( companyID, nameAdress );
+
+    bool result;
+
+    if(size != 0){
+
+      if(name == "" || addr == "" ||  name == " " || addr == " " || name == "\0" || addr == "\0"){
+        result = false;
+      }
+      else{
+        string _name = name;
+        string _addr = addr;
+
+        std::transform(_name.begin(), _name.end(),_name.begin(), [](unsigned char c){ return std::tolower(c);});
+        std::transform(_addr.begin(), _addr.end(),_addr.begin(), [](unsigned char c){ return std::tolower(c);});
+
+        for(size_t i = 0; i < size; i++){
+          string nameF = data_base[i].name;
+          string addrF = data_base[i].addr;
+          std::transform(nameF.begin(), nameF.end(),nameF.begin(), [](unsigned char c){ return std::tolower(c);});
+          std::transform(addrF.begin(), addrF.end(),addrF.begin(), [](unsigned char c){ return std::tolower(c);});
+          if(nameF == _name && addrF == _addr && data_base[i].taxID != taxID){
+            result = false;
+            break;
+          }
+          else{
+            result = true;
+          }
+        }
+      }
+
+
+
+      if(result){
+        Company * new_data = new Company[size+1];
+
+        for(size_t i = 0; i < size; i++) {
+          new_data[i] = data_base[i];
+        }
+
+        delete[] data_base;
+        data_base = new_data;
+        result = true;
+      }
     }
+    else{
+      Company * new_data = new Company[size+1];
+      delete[]data_base;
+      data_base = new_data;
+      result = true;
+    }
+    if(result){
+      data_base[size].name = name;
+      data_base[size].addr = addr;
+      data_base[size].taxID = taxID;
+      data_base[size].inv = 0;
+      size++;
+    }
+    return result;
+    }
+
 	bool cancelCompany ( const string & taxID ) {
     }
 	bool cancelCompany ( const string & name, const string & addr ) {
@@ -212,6 +287,7 @@ public:
 	bool audit ( const string & taxID, unsigned int & sumIncome ) const {
 	}
 	unsigned int medianInvoice ( void ) const {
+			median = 0;
 		return median;
 	}
 
