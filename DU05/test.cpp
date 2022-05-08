@@ -308,6 +308,129 @@ class CSupermarket
       _products.push_back(Product(name,expiryDate,count));
       return *this;
     }
+
+    void sell (list<pair<string,int>>& a){
+
+      _products.sort([](Product& a, Product& b){
+        return a._date < b._date;
+      });
+
+      std::vector<pair<string,int>> selling;
+      std::vector<pair<string,int>> products;
+      std::vector<CDate> dates;
+      std::list<Product>::iterator it;
+      it = _products.begin();
+      while(it != _products.end()){
+          products.push_back(pair<std::string,int>(it->name(),it->counts()));
+          dates.push_back(it->date());
+        ++it;
+      }
+
+      std::list<pair<string,int>>::iterator iter;
+      iter = a.begin();
+      while(iter != a.end()){
+          selling.push_back(*iter);
+        ++iter;
+      }
+
+      sort(products.begin(),products.end(),compare_for_sell);
+
+      for(size_t i = 0; i < selling.size(); i++){
+        for(size_t j = 0; j < products.size(); j++){
+          if(selling[i].first == products[j].first){
+            if(selling[i].second < products[j].second){
+              products[j].second -= selling[i].second;
+              remove(selling.begin(),selling.end(),selling[i]);
+            }
+            else if(selling[i].second == products[j].second){
+              remove(selling.begin(),selling.end(),selling[i]);
+              remove(products.begin(),products.end(),products[j]);
+              remove(dates.begin(),dates.end(),dates[j]);
+            }
+            else{
+              selling[i].second -= products[j].second;
+/**/          remove(products.begin(),products.end(),products[j]);
+              remove(dates.begin(),dates.end(),dates[j]);
+              for(size_t k = j; k < products.size() - 1 - j; k++){
+                if(products[k].first == selling[i].first){
+                  selling[i].second -= products[k].second;
+                  if(products[k].second < selling[i].second){
+                    remove(products.begin(),products.end(),products[k]);
+                    remove(dates.begin(),dates.end(),dates[k]);
+                  }
+                  if(selling[i].second < 0){
+                    products[k].second = abs(selling[i].second);
+                    remove(selling.begin(),selling.end(),selling[i]);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      products.pop_back();
+      dates.pop_back();
+      selling.pop_back();
+
+      for(size_t i = 0; i < selling.size(); i++){
+        for(size_t j = 0; j < products.size(); j++){
+          if(almostEqual(selling[i].first, products[j].first)){
+            if(selling[i].second < products[j].second){
+              products[j].second -= selling[i].second;
+              remove(selling.begin(),selling.end(),selling[i]);
+            }
+            else if( selling[i].second == products[j].second){
+              remove(selling.begin(),selling.end(),selling[i]);
+              remove(products.begin(),products.end(),products[j]);
+              remove(dates.begin(),dates.end(),dates[j]);
+            }
+            else{
+              selling[i].second -= products[j].second;
+              remove(products.begin(),products.end(),products[j]);
+              remove(dates.begin(),dates.end(),dates[j]);
+              for(size_t k = j; k < products.size() - 1 - j; k++){
+                if(almostEqual(selling[i].first, products[k].first)){
+                  selling[i].second -= products[k].second;
+                  if(products[k].second < selling[i].second){
+                    remove(products.begin(),products.end(),products[k]);
+                    remove(dates.begin(),dates.end(),dates[k]);
+                  }
+                  if(selling[i].second < 0){
+                    products[k].second = abs(selling[i].second);
+                    remove(selling.begin(),selling.end(),selling[i]);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+
+
+      // products.pop_back();
+      // dates.pop_back();
+      // selling.pop_back();
+
+      a.clear();
+
+      std::vector<pair<std::string,int>>::iterator iterator;
+      iterator = selling.begin();
+      while(iterator != selling.end()){
+        a.push_back(*iterator);
+        ++iterator;
+      }
+
+      _products.clear();
+
+      for(size_t i = 0; i < products.size(); i++){
+        string name = products[i].first;
+        CDate date = dates[i];
+        size_t count = products[i].second;
+        _products.push_back(Product(name,date,count));
+      }
+    }
     // expired ( date ) const
 
     std::list<pair<std::string,int>> expired(const CDate a) const {
