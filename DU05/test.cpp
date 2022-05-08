@@ -289,6 +289,59 @@ class CSupermarket
       _products.push_back(Product(name,expiryDate,count));
       return *this;
     }
+    // expired ( date ) const
+
+    std::list<pair<std::string,int>> expired(const CDate a) const {
+      std::list<Product>::const_iterator it;
+      it = _products.begin();
+      std::vector<pair<std::string,int>> expired;
+
+
+      while(it != _products.end()){
+        if(it->_date < a){
+          expired.push_back(pair<std::string,int>(it->name(),it->counts()));
+        }
+        ++it;
+      }
+
+      std::vector<pair<std::string,int>> expired_with_duplicate;
+
+      for(size_t i = 0; i < expired.size() - 1;i++){
+        for(size_t j = i+1; j < expired.size(); j++){
+          if(expired[i].first == expired[j].first){
+            expired[i].second += expired[j].second;
+            expired_with_duplicate.push_back(expired[i]);
+          }
+        }
+      }
+
+      std::list<pair<std::string,int>> expired_without_duplicate;
+      if(expired_with_duplicate.size() == 0){
+          for(size_t i = 0; i < expired.size(); i++){
+            expired_without_duplicate.push_back(expired[i]);
+          }
+      }
+      else{
+        for(size_t i = 0; i < expired_with_duplicate.size();i++){
+          for(size_t j = 0; j < expired.size();j++){
+            if(expired[j].first == expired_with_duplicate[i].first){
+              expired_without_duplicate.push_back(expired_with_duplicate[i]);
+            }
+            else{
+              expired_without_duplicate.push_back(expired[j]);
+            }
+          }
+        }
+      }
+
+
+      expired_without_duplicate.sort([](pair<std::string,int> a, pair<std::string,int> b){
+        return a.second > b.second;
+      });
+      expired_without_duplicate.unique();
+
+      return expired_without_duplicate;
+    }
   private:
     struct Product{
 
