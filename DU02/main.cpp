@@ -529,6 +529,20 @@ public:
 	}
 
 	bool audit ( const string & name, const string & addr, unsigned int & sumIncome ) const {
+		string nameAdress = name + "´´^´ˇ´" + addr;
+		std::transform ( nameAdress.begin(), nameAdress.end(), nameAdress.begin(), ::tolower );
+		string state;
+
+		try {
+			state = Company_Addr.GetPrvk ( nameAdress );
+		} catch  ( bool e ) { return false; }
+
+		try {
+			sumIncome = invoice_id.GetPrvk ( state );
+			return true;
+		} catch ( bool e ) {
+			return false;
+		}
 	}
 	bool audit ( const string & taxID, unsigned int & sumIncome ) const {
 	}
