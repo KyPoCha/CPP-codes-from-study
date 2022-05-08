@@ -271,7 +271,66 @@ public:
     }
 
 	bool cancelCompany ( const string & taxID ) {
+		string companyID = taxID;
+		string state;
+
+		try {
+			state = Company_Id.GetPrvk ( companyID );
+		} catch ( bool e ) { return false; }
+
+
+		Company_Id.RemovePrvk ( companyID );
+		invoice_id.RemovePrvk ( companyID );
+		Company_Addr.RemovePrvk ( state );
+
+
+          bool result;
+
+          if( taxID == " " || taxID == ""){
+            result = false;
+          }
+          else{
+            for(size_t i = 0; i < size; i++){
+              if(data_base[i].taxID == taxID){
+                result = true;
+                break;
+              }
+              else{
+                result = false;
+              }
+            }
+          }
+
+
+          if(result){
+            if(size == 0){
+              return false;
+            }
+            else{
+              for(size_t i = 0; i < size; i++){
+                if(data_base[i].taxID == taxID){
+                  Company tmp = data_base[i];
+                  data_base[i] = data_base[size-1];
+                  data_base[size-1] = tmp;
+                  break;
+                }
+              }
+              Company* new_data = new Company[size-1];
+
+              for(size_t i = 0; i < size-1; i++) {
+                new_data[i] = data_base[i];
+              }
+
+              delete[] data_base;
+              data_base = new_data;
+              size--;
+              result = true;
+            }
+          }
+
+          return result;
     }
+
 	bool cancelCompany ( const string & name, const string & addr ) {
 	}
   bool firstCompany ( string& name, string& addr ) const{
