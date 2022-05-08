@@ -97,8 +97,40 @@ class CFile
     };
 
     void                     addVersion                    ( void ){
+        _data_version++;
+        _versions = (CData *)realloc(_versions, ((sizeof(CData) + 1) * (_data_version+1)));
+
+        _versions[_data_version - 1]._bytes = (uint8_t *)malloc(_size * sizeof(uint8_t));
+        memcpy(_versions[_data_version - 1]._bytes, data._bytes, _size);
+
+        _versions[_data_version - 1]._size = _size;
+        _versions[_data_version - 1]._pos = _pos;
     };
+
     bool                     undoVersion                   ( void ){
+        if(_data_version == 0){
+          return false;
+        }
+
+        free(data._bytes);
+        data._bytes = (uint8_t *)malloc(_versions[_data_version -1]._size * sizeof(uint8_t));
+        memcpy(data._bytes, _versions[_data_version - 1]._bytes, _versions[_data_version - 1]._size);
+
+        _size = _versions[_data_version - 1]._size;
+        _pos = _versions[_data_version - 1]._pos;
+        _data_version--;
+
+
+        CData * t = (CData *)malloc(_data_version * sizeof(CData));
+        memcpy(t, _versions, _data_version);
+        for(uint64_t i = 0; i < _data_version; i++){
+            t[i]._bytes = _versions[i]._bytes;
+            t[i]._size = _versions[i]._size;
+            t[i]._pos = _versions[i]._pos;
+        }
+        free(_versions[_data_version]._bytes);
+        free(_versions);
+        _versions = t;
         return true;
     };
     //
