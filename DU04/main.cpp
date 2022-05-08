@@ -78,13 +78,28 @@ class CFile
     };
 
      void                     truncate                      ( void ){
+        if(_pos == _size){
+          return;
+        }
+
+        uint8_t * t = (uint8_t*)malloc(_pos * sizeof(uint8_t));
+
+        memcpy(t, data._bytes, _pos);
+        free(data._bytes);
+
+        data._bytes = t;
+
+        _size = _pos;
     };
+
     uint32_t                 fileSize                      ( void ) const{
+        return _size;
     };
 
     void                     addVersion                    ( void ){
     };
     bool                     undoVersion                   ( void ){
+        return true;
     };
     //
     // uint64_t& getlen(){
