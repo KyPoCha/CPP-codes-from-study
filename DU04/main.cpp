@@ -52,10 +52,31 @@ class CFile
 
     uint32_t                 read                          ( uint8_t         * dst,
                                                              uint32_t          bytes ){
+      uint32_t readed;
+      if(_size - _pos < bytes){
+        readed = _size - _pos;
+      }
+      else {
+        readed = bytes;
+      }
+      memcpy(dst, data._bytes + _pos, readed);
+      _pos += readed;
+      return readed;
     };
+
     uint32_t                 write                         ( const uint8_t   * src,
                                                              uint32_t          bytes ){
+        if(_size - _pos < bytes){
+            _size += bytes - (_size - _pos);
+            data._bytes = (uint8_t *)realloc(data._bytes, ((sizeof(uint8_t) + 1) * (_size+1)));
+        }
+
+        memcpy(data._bytes + _pos, src, bytes);
+        _pos += bytes;
+
+        return bytes;
     };
+
      void                     truncate                      ( void ){
     };
     uint32_t                 fileSize                      ( void ) const{
