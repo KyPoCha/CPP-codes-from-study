@@ -275,6 +275,20 @@ bool operator <= (const CDate& a, const CDate& b){
 class CSupermarket
 {
   public:
+    CSupermarket ( void ){}
+    // store   ( name, expiryDate, count )
+    CSupermarket& store (std::string name, CDate expiryDate, size_t count){
+      std::list<Product>::iterator it;
+      it = _products.begin();
+      while(it != _products.end()){
+        if(it->_name == name && it->_date == expiryDate){
+          it->_counts+=count;
+        }
+        ++it;
+      }
+      _products.push_back(Product(name,expiryDate,count));
+      return *this;
+    }
   private:
     struct Product{
 
