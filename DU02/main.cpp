@@ -505,8 +505,29 @@ public:
 		invoice_id.PutPrvk ( taxID, sum );
 		return true;
 	}
+
 	bool invoice ( const string & name, const string & addr, unsigned int amount ) {
+		string nameAdress = name + "´´^´ˇ´" + addr;
+		std::transform ( nameAdress.begin(), nameAdress.end(), nameAdress.begin(), ::tolower );
+		string state;
+
+		try {
+			state = Company_Addr.GetPrvk ( nameAdress );
+		} catch ( bool e ) { return false; }
+
+		unsigned int sum;
+		try {
+			sum = invoice_id.GetPrvk ( state );
+		} catch ( bool e ) { return false; }
+
+		sum += amount;
+		median_invoice.push_back (amount);
+
+		invoice_id.PutPrvk ( state, sum );
+		return true;
+
 	}
+
 	bool audit ( const string & name, const string & addr, unsigned int & sumIncome ) const {
 	}
 	bool audit ( const string & taxID, unsigned int & sumIncome ) const {
