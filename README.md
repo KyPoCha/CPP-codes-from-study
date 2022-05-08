@@ -1,4 +1,5 @@
-BI-PA2 repository
+*BI-PA2* repository
 
 In directory SemesterWork is located semestr work for PA2
-DU0# - there are located resolved homework tasks
+
+Branches *DU0#* - there are branches where are located resolved homework tasks
