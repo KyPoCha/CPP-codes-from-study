@@ -19,10 +19,282 @@
 #include <memory>
 using namespace std;
 #endif /* __PROGTEST__ */
+
+bool DaysInMonth(int days, int month){
+  bool IsValid;
+  if( month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 9 || month == 10 || month == 12){
+    if(days <= 31 && days > 0){
+      IsValid = true;
+    }
+    else{
+      IsValid = false;
+    }
+  }
+  else{
+    if(days <= 30 && days > 0){
+      IsValid = true;
+    }
+    else{
+      IsValid = false;
+    }
+  }
+  return IsValid;
+}
+void print_vector(std::vector<pair<std::string,int>>& a);
+
+class CDate
+{
+public:
+  //initialization of object
+  CDate(int year, int month, int day){
+    if(year > 2030 || year < 2000){
+      throw "invalid date or format";
+    }
+    else{
+      this->_year = year;
+    }
+    if(month <= 0 || month > 12){
+      throw "invalid date or format";
+    }
+    else{
+      this->_month = month;
+    }
+    if(day <= 0 || day > 31){
+      throw "invalid date or format";
+    }
+    else{
+      this->_day = day;
+    }
+  };
+  CDate(void){}
+
+  int GetY() const {
+    return _year;
+  }
+
+  int GetM() const {
+    return _month;
+  }
+
+  int GetD() const{
+    return _day;
+  }
+
+  bool IsValidDay(int value){
+    if(_year % 4 == 0 && _month == 2){
+      if(value <= 29 && value > 0){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    else{
+      if(value <= 0 || value > 31){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+  }
+
+  bool IsValidDay(int value, int year, int month){
+    if(year % 4 == 0 && month == 2){
+      if(value <= 29 && value > 0){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    else if(month == 2){
+      if(value <= 0 || value > 28){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+    else{
+      if( value <= 0 || value > 31){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+  }
+
+  bool IsValidMonth(int value){
+    if(value <= 0 || value > 12){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
+  bool IsValidYear(int value){
+    if(value < 2000 || value > 2030){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
+  void SetD(int value){
+    if(IsValidDay(value)){
+      _day = value;
+    }
+    else{
+      _day = 0;
+    }
+  }
+
+  void SetM(int value){
+    if(IsValidMonth(value)){
+      _month = value;
+    }
+    else{
+      _month = 0;
+    }
+  }
+
+  void SetY(int value){
+    if(IsValidYear(value)){
+      _year = value;
+    }
+    else{
+      _year = 0;
+    }
+  }
+
+  long JDay(){
+      if (_month <= 2){
+        _year--;
+        _month += 12;
+      }
+      unsigned long jday;
+      int a = _year / 100;
+      a = 2 - a + (a / 4);
+      jday = 1461L * long(_year);
+      jday /= 4L;
+      unsigned long k = 306001L * long(_month + 1);
+      k /= 10000L;
+      jday += k + _day + 1720995L + a;
+      return jday;
+  }
+
+
+    long JDay() const {
+        int month = _month, year = _year, day = _day;
+        if (_month <= 2){
+          year--;
+          month += 12;
+        }
+        unsigned long jday;
+        int a = year / 100;
+        a = 2 - a + (a / 4);
+        jday = 1461L * long(year);
+        jday /= 4L;
+        unsigned long k = 306001L * long(month + 1);
+        k /= 10000L;
+        jday += k + day + 1720995L + a;
+        return jday;
+    }
+
+  void GDate(long jday) {
+    unsigned long a = (jday * 4L - 7468865L) / 146097L;
+    a = (jday > 2299160) ? jday + 1 + a - (a / 4L) : jday;
+    long b = a + 1524;
+    long c = (b * 20L - 2442L) / 7305L;
+    long d = (c * 1461L) / 4L;
+    long e = (10000L * (b - d)) / 306001L;
+    _day = int(b - d - ((e * 306001L) / 10000L));
+    _month = int((e <= 13) ? e - 1 : e - 13);
+    _year = int(c - ((_month > 2) ? 4716 : 4715));
+  }
+
+  bool operator == (CDate& b){
+    return JDay() == b.JDay();
+  }
+
+  bool operator != (CDate& b){
+    return JDay() != b.JDay();
+  }
+
+  bool operator < (CDate& b){
+    return JDay() < b.JDay();
+  }
+
+  bool operator > (CDate& b){
+    return JDay() > b.JDay();
+  }
+
+  bool operator >= (CDate& b){
+    return JDay() >= b.JDay();
+  }
+
+  bool operator <= (CDate& b){
+    return JDay() <= b.JDay();
+  }
+
+  friend bool operator != (const CDate& a,const CDate& b);
+  friend bool operator == (const CDate& a,const CDate& b);
+  friend bool operator < (const CDate& a,const CDate& b);
+  friend bool operator > (const CDate& a, const CDate& b);
+  friend bool operator <= (const CDate& a, const CDate& b);
+
+  friend std::ostream& operator << (std::ostream &oss,const CDate& a);
+private:
+  int _year, _month, _day;
+
+};
+
+bool operator != (const CDate& a,const CDate& b){
+  return a.JDay() != b.JDay();
+}
+
+bool operator == (const CDate& a,const CDate& b){
+  return a.JDay() == b.JDay();
+}
+
+bool operator < (const CDate& a,const CDate& b){
+  return a.JDay() < b.JDay();
+}
+
+bool operator > (const CDate& a, const CDate& b){
+  return a.JDay() > b.JDay();
+}
+
+bool operator <= (const CDate& a, const CDate& b){
+  return a.JDay() <= b.JDay();
+}
 class CSupermarket
 {
 };
 
+
+std::ostream& operator << (std::ostream &oss,const CDate& a){
+  oss << a.GetY();
+
+  if(a.GetM() < 10){
+    oss << "-0" << a.GetM();
+  }
+  else{
+    oss << "-" << a.GetM();
+  }
+  if(a.GetD() < 10){
+    oss << "-0" << a.GetD();
+  }
+  else{
+    oss << "-" << a.GetD();
+  }
+
+  return oss;
+}
 #ifndef __PROGTEST__
 int main ( void )
 {
