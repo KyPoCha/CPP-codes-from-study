@@ -432,6 +432,21 @@ public:
 		addr = vector[0].addr;
     return true;
   }
+	void print(std::ostream& out = std::cout) const {
+		std::vector<Company> vector;
+
+		for (size_t i = 0; i < size; i++){
+			vector.push_back(data_base[i]);
+		}
+
+		sort(vector.begin(),vector.end(),[](Company a, Company b){
+			return a > b;
+		});
+		for(size_t i = 0; i < size; i++){
+			out << vector[i].name << " " << vector[i].addr << " " << vector[i].taxID << " " << vector[i].inv << std::endl;
+		}
+	}
+
   bool nextCompany ( string& name, string& addr ) const{
   }
 	bool invoice ( const string & taxID, unsigned int amount ) {
