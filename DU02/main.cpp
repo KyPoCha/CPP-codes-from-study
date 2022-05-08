@@ -332,7 +332,82 @@ public:
     }
 
 	bool cancelCompany ( const string & name, const string & addr ) {
+		string nameAdress = name + "´´^´ˇ´" + addr;
+		std::transform ( nameAdress.begin(), nameAdress.end(), nameAdress.begin(), ::tolower );
+		string state;
+
+		try {
+			state = Company_Addr.GetPrvk ( nameAdress );
+		} catch ( bool e ) { return false; }
+
+		Company_Id.RemovePrvk ( state );
+		invoice_id.RemovePrvk ( state );
+		Company_Addr.RemovePrvk ( nameAdress );
+    bool result;
+
+    if((name == "" || addr == "") || (name == " " || addr == " ")){
+      result = false;
+    }
+    else{
+      string _name = name;
+      string _addr = addr;
+
+      std::transform(_name.begin(), _name.end(),_name.begin(), [](unsigned char c){ return std::tolower(c);});
+      std::transform(_addr.begin(), _addr.end(),_addr.begin(), [](unsigned char c){ return std::tolower(c);});
+
+      for(size_t i = 0; i < size; i++){
+        string nameF = data_base[i].name;
+        string addrF = data_base[i].addr;
+        std::transform(nameF.begin(), nameF.end(),nameF.begin(), [](unsigned char c){ return std::tolower(c);});
+        std::transform(addrF.begin(), addrF.end(),addrF.begin(), [](unsigned char c){ return std::tolower(c);});
+        if(_name == nameF && _addr == addrF){
+          result = true;
+          break;
+        }
+        else{
+          result = false;
+        }
+      }
+    }
+
+    if(result){
+      if(size == 0){
+        return false;
+      }
+      else{
+        string _name = name;
+        string _addr = addr;
+
+        std::transform(_name.begin(), _name.end(),_name.begin(), [](unsigned char c){ return std::tolower(c);});
+        std::transform(_addr.begin(), _addr.end(),_addr.begin(), [](unsigned char c){ return std::tolower(c);});
+        for(size_t i = 0; i < size; i++){
+          string nameF = data_base[i].name;
+          string addrF = data_base[i].addr;
+          std::transform(nameF.begin(), nameF.end(),nameF.begin(), [](unsigned char c){ return std::tolower(c);});
+          std::transform(addrF.begin(), addrF.end(),addrF.begin(), [](unsigned char c){ return std::tolower(c);});
+          if(_name == nameF && _addr == addrF){
+            Company tmp = data_base[i];
+            data_base[i] = data_base[size-1];
+            data_base[size-1] = tmp;
+            break;
+          }
+        }
+        Company* new_data = new Company[size-1];
+
+        for(size_t i = 0; i < size-1; i++) {
+          new_data[i] = data_base[i];
+        }
+
+        delete[] data_base;
+        data_base = new_data;
+        size--;
+        result = true;
+      }
+    }
+
+    return result;
 	}
+
   bool firstCompany ( string& name, string& addr ) const{
   }
   bool nextCompany ( string& name, string& addr ) const{
