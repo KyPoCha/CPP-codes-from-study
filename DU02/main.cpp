@@ -495,6 +495,15 @@ public:
   }
 
 	bool invoice ( const string & taxID, unsigned int amount ) {
+		unsigned int sum;
+		try {
+			sum = invoice_id.GetPrvk ( taxID );
+		} catch ( bool e ) { return false; }
+
+		sum += amount;
+		median_invoice.push_back (amount);
+		invoice_id.PutPrvk ( taxID, sum );
+		return true;
 	}
 	bool invoice ( const string & name, const string & addr, unsigned int amount ) {
 	}
