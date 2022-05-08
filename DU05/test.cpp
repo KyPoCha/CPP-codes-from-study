@@ -272,6 +272,25 @@ bool operator > (const CDate& a, const CDate& b){
 bool operator <= (const CDate& a, const CDate& b){
   return a.JDay() <= b.JDay();
 }
+
+bool compare_for_sell(pair<string,int>& a, pair<string,int>& b){
+    return a.first == b.first;
+}
+
+bool almostEqual(const string & a, const string & b){
+        if (a.length() != b.length()) {
+          return false;
+        }
+        char errors = 1;
+        for(unsigned long int i = 0; i<a.length(); i++){
+            if(a.at(i) != b.at(i)) {
+              errors--;
+            }
+            if(errors < 0) return false;
+        }
+        return true;
+    };
+
 class CSupermarket
 {
   public:
@@ -342,6 +361,23 @@ class CSupermarket
 
       return expired_without_duplicate;
     }
+
+    void print(){
+      std::list<Product>::iterator it;
+      it = _products.begin();
+      while(it != _products.end()){
+        std::cout << *it <<'\n';
+        ++it;
+      }
+    }
+
+    void sorting(){
+      _products.sort([](Product& a, Product& b){
+        return a._counts > b._counts;
+      });
+    }
+
+
   private:
     struct Product{
 
